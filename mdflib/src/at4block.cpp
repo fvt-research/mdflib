@@ -22,7 +22,7 @@
 #include "mdf/zlibutil.h"
 #include "platform.h"
 
-using namespace std::filesystem;
+// using namespace std::filesystem;
 
 namespace {
 
@@ -71,7 +71,7 @@ std::string ConvertMd5Buffer(const std::vector<uint8_t>& buffer) {
 
 bool FileToBuffer(const std::string& filename, mdf::ByteArray& dest) {
   try {
-    path fullname = u8path(filename);
+    fs::path fullname = fs::u8path(filename);
     const auto size = file_size(fullname);
     if (size > 0) {
       dest.resize(size, 0);
@@ -172,7 +172,7 @@ size_t At4Block::Write(std::FILE* file) {
   }
   ByteArray data_buffer;
   try {
-    path filename = u8path(filename_);
+    fs::path filename = fs::u8path(filename_);
     if (!fs::exists(filename)) {
       MDF_ERROR() << "Attachment File doesn't exist. File: " << filename_;
       return 0;

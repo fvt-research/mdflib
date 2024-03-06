@@ -27,7 +27,7 @@
 #include "mdfblock.h"
 #include "platform.h"
 
-using namespace std::filesystem;
+// using namespace std::filesystem;
 using namespace std::chrono_literals;
 
 namespace {
@@ -504,7 +504,7 @@ bool MdfWriter::WriteSignalData(std::FILE* file) {
 
 std::string MdfWriter::Name() const {
   try {
-    auto filename = u8path(filename_).stem().u8string();
+    auto filename = fs::u8path(filename_).stem().u8string();
     return std::string(filename.begin(), filename.end());
   } catch (...) {
   }

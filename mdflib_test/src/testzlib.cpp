@@ -17,7 +17,7 @@
 #include "mdf/zlibutil.h"
 #include "platform.h"
 
-using namespace std::filesystem;
+// using namespace std::filesystem;
 
 namespace {
 
