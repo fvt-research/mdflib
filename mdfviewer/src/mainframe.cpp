@@ -175,7 +175,7 @@ void MainFrame::OnDropFiles(wxDropFilesEvent& event) {
     try {
       const auto& file = list[ii];
      fs::path p(file.ToStdWstring());
-      if (!std::filesystem::exists(p)) {
+      if (!fs::exists(p)) {
         continue;
       }
       const auto& u8str = p.u8string();

@@ -173,7 +173,7 @@ size_t At4Block::Write(std::FILE* file) {
   ByteArray data_buffer;
   try {
     path filename = u8path(filename_);
-    if (!std::filesystem::exists(filename)) {
+    if (!fs::exists(filename)) {
       MDF_ERROR() << "Attachment File doesn't exist. File: " << filename_;
       return 0;
     }

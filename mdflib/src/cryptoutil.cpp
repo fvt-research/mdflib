@@ -249,7 +249,7 @@ bool CreateMd5FileChecksum(const std::string &file, std::vector<uint8_t> &md5) {
 
   try {
    fs::path p =fs::u8path(file);
-    if (std::filesystem::exists(p)) {
+    if (fs::exists(p)) {
       std::FILE *f = nullptr;
       Platform::fileopen(&f, file.c_str(), "rb");
       if (f != nullptr) {

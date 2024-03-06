@@ -119,7 +119,7 @@ bool MdfWriter::Init(const std::string& filename) {
   }
   std::FILE* file = nullptr;
   try {
-    if (std::filesystem::exists(filename_)) {
+    if (fs::exists(filename_)) {
       // Read in existing file so we can append to it
 
       detail::OpenMdfFile(file, filename_, "rb");

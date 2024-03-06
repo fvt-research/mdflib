@@ -25,7 +25,7 @@ TEST(CryptoUtil, CreateMd5FileChecksum)  // NOLINT
 {
   bool skip_test;
   try {
-    skip_test = !std::filesystem::exists(kTestFile);
+    skip_test = !fs::exists(kTestFile);
   } catch (const std::exception&) {
     skip_test = true;
   }

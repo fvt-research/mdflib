@@ -21,7 +21,7 @@ using namespace MdfLibrary::ExportFunctions;
 void c_example() {
   std::cout << "C example" << std::endl;
 
-  if (std::filesystem::exists("test_c.mf4"))
+  if (fs::exists("test_c.mf4"))
    fs::remove("test_c.mf4");
 
   {
@@ -203,7 +203,7 @@ void c_example() {
 void cpp_example() {
   std::cout << "C++ example" << std::endl;
   {
-    if (std::filesystem::exists("test_cpp.mf4"))
+    if (fs::exists("test_cpp.mf4"))
      fs::remove("test_cpp.mf4");
 
     std::cout << "Write Basic" << std::endl;
@@ -318,7 +318,7 @@ void cpp_example() {
   }
 
   {
-    if (std::filesystem::exists("test_can_cpp.mf4"))
+    if (fs::exists("test_can_cpp.mf4"))
      fs::remove("test_can_cpp.mf4");
 
     std::cout << "Write Can" << std::endl;

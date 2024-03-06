@@ -139,7 +139,7 @@ bool BackupFiles(const std::string &filename, bool remove_file) {
     constfs::path parent(full.parent_path());
     constfs::path stem(full.stem());
     constfs::path ext(full.extension());
-    if (!std::filesystem::exists(full)) {
+    if (!fs::exists(full)) {
       return true;  // No meaning to back up if original doesn't exist.
     }
     // shift all file xxx_N -> xxx_N-1 and last xxx -> xxx_0
@@ -149,7 +149,7 @@ bool BackupFiles(const std::string &filename, bool remove_file) {
 
      fs::path file1(parent);
       file1.append(temp1.str());
-      if (std::filesystem::exists(file1) && ii == 9) {
+      if (fs::exists(file1) && ii == 9) {
        fs::remove(file1);
       }
       if (ii == 0) {
@@ -163,7 +163,7 @@ bool BackupFiles(const std::string &filename, bool remove_file) {
         temp2 << stem.string() << "_" << ii - 1 << ext.string();
        fs::path file2(parent);
         file2.append(temp2.str());
-        if (std::filesystem::exists(file2)) {
+        if (fs::exists(file2)) {
          fs::rename(file2, file1);
         }
       }
