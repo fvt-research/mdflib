@@ -2,7 +2,15 @@
  * Copyright 2021 Ingemar Hedvall
  * SPDX-License-Identifier: MIT
  */
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <codecvt>
 #define BOOST_LOCALE_HIDE_AUTO_PTR
 #include <boost/process.hpp>
@@ -93,11 +101,11 @@ bool MdfViewer::OnInit() {
 
   // Create a temporary directory for this application
   try {
-    auto temp_dir = std::filesystem::temp_directory_path();
+    auto temp_dir =fs::temp_directory_path();
     auto unique = boost::filesystem::unique_path("MdfViewer%%%%");
     temp_dir.append(unique.string());
-    std::filesystem::remove_all(temp_dir);
-    std::filesystem::create_directories(temp_dir);
+   fs::remove_all(temp_dir);
+   fs::create_directories(temp_dir);
     my_temp_dir_ = temp_dir.string();
     LOG_INFO() << "Created a temporary directory. Path: " << my_temp_dir_;
   } catch (const std::exception& error) {
@@ -135,7 +143,7 @@ int MdfViewer::OnExit() {
   LOG_INFO() << "Saved file history.";
 
   try {
-    std::filesystem::remove_all(my_temp_dir_);
+   fs::remove_all(my_temp_dir_);
     LOG_INFO() << "Removed temporary directory. Path: " << my_temp_dir_;
   } catch (const std::exception& error) {
     LOG_ERROR() << "Failed to remove temporary directory. Path: " << my_temp_dir_;
@@ -163,8 +171,8 @@ void MdfViewer::OnUpdateOpenLogFile(wxUpdateUIEvent &event) {
   auto& log_config = LogConfig::Instance();
   std::string logfile = log_config.GetLogFile();
   try {
-    std::filesystem::path p(logfile);
-    const bool exist = std::filesystem::exists(p);
+   fs::path p(logfile);
+    const bool exist =fs::exists(p);
     event.Enable(exist);
   } catch (const std::exception&) {
     event.Enable(false);

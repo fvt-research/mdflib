@@ -11,6 +11,9 @@ CMakeUserPresets.json
 
 # IntelliJ
 out/
+compiler/
+build/
+opt/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

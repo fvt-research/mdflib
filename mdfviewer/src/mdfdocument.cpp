@@ -4,7 +4,15 @@
  */
 #include <sstream>
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <boost/process.hpp>
 #if (_MSC_VER)
 #include <boost/process/windows.hpp>
@@ -46,7 +54,7 @@ std::string CreateCsvFile(const mdf::ChannelObserverList& list) {
   const auto& app = wxGetApp();
   std::string csv_file;
   try {
-    std::filesystem::path temp_file(app.GetMyTempDir());
+   fs::path temp_file(app.GetMyTempDir());
     const auto unique  = boost::filesystem::unique_path();
     temp_file.append(unique.string());
     temp_file.replace_extension(".csv");
@@ -94,7 +102,7 @@ std::string CreateGnuPlotFile(const mdf::ChannelObserverList& list, const std::s
 
   std::string gp_file;
   try {
-    std::filesystem::path p(csv_file);
+   fs::path p(csv_file);
     p.replace_extension(".gp");
     gp_file = p.generic_string();
   } catch(const std::exception& error) {

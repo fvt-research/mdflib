@@ -4,7 +4,15 @@
  */
 #include "ixmlfile.h"
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <fstream>
 
 #include "expatxml.h"
@@ -16,7 +24,7 @@ namespace mdf {
 
 std::string IXmlFile::FileNameWithoutPath() const {
   try {
-    auto filename = std::filesystem::u8path(filename_).stem().u8string();
+    auto filename =fs::u8path(filename_).stem().u8string();
     return std::string(filename.begin(), filename.end());
   } catch (const std::exception &error) {
     MDF_ERROR() << "Invalid path. File: " << filename_

@@ -7,7 +7,15 @@
 #include <array>
 #include <cstdio>
 #include <cstring>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 #include "mdf/mdflogstream.h"
 
@@ -240,7 +248,7 @@ bool CreateMd5FileChecksum(const std::string &file, std::vector<uint8_t> &md5) {
   }
 
   try {
-    std::filesystem::path p = std::filesystem::u8path(file);
+   fs::path p =fs::u8path(file);
     if (std::filesystem::exists(p)) {
       std::FILE *f = nullptr;
       Platform::fileopen(&f, file.c_str(), "rb");

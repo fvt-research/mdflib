@@ -2,7 +2,15 @@
  * Copyright 2023 Simplxs
  * SPDX-License-Identifier: MIT
  */
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <iostream>
 #include <sstream>
 
@@ -14,7 +22,7 @@ void c_example() {
   std::cout << "C example" << std::endl;
 
   if (std::filesystem::exists("test_c.mf4"))
-    std::filesystem::remove("test_c.mf4");
+   fs::remove("test_c.mf4");
 
   {
     std::cout << "Write" << std::endl;
@@ -196,7 +204,7 @@ void cpp_example() {
   std::cout << "C++ example" << std::endl;
   {
     if (std::filesystem::exists("test_cpp.mf4"))
-      std::filesystem::remove("test_cpp.mf4");
+     fs::remove("test_cpp.mf4");
 
     std::cout << "Write Basic" << std::endl;
     MdfWriter Writer(MdfWriterType::Mdf4Basic, "test_cpp.mf4");
@@ -311,7 +319,7 @@ void cpp_example() {
 
   {
     if (std::filesystem::exists("test_can_cpp.mf4"))
-      std::filesystem::remove("test_can_cpp.mf4");
+     fs::remove("test_can_cpp.mf4");
 
     std::cout << "Write Can" << std::endl;
     MdfWriter Writer(MdfWriterType::MdfBusLogger, "test_can_cpp.mf4");

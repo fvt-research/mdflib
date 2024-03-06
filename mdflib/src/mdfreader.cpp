@@ -6,7 +6,15 @@
 
 
 #include <cstdio>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <string>
 #include <thread>
 #include <vector>
@@ -201,7 +209,7 @@ MdfReader::MdfReader(const std::string &filename) : filename_(filename) {
   // Need to create MDF3 of MDF4 file
   bool bExist = false;
   try {
-    std::filesystem::path p = std::filesystem::u8path(filename_);
+   fs::path p =fs::u8path(filename_);
     if (std::filesystem::exists(p)) {
       bExist = true;
     }
@@ -251,7 +259,7 @@ MdfReader::~MdfReader() { Close(); }
 
 std::string MdfReader::ShortName() const {
   try {
-    auto filename = std::filesystem::u8path(filename_).stem().u8string();
+    auto filename =fs::u8path(filename_).stem().u8string();
     return std::string(filename.begin(), filename.end());
   } catch (const std::exception &) {
   }

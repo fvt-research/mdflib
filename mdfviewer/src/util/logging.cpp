@@ -5,7 +5,15 @@
 #include <boost/process.hpp>
 #include <boost/filesystem.hpp>
 
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <vector>
 
 #include "logconfig.h"
@@ -127,10 +135,10 @@ bool BackupFiles(const std::string &filename, bool remove_file) {
   }
 
   try {
-    const std::filesystem::path full(filename);
-    const std::filesystem::path parent(full.parent_path());
-    const std::filesystem::path stem(full.stem());
-    const std::filesystem::path ext(full.extension());
+    constfs::path full(filename);
+    constfs::path parent(full.parent_path());
+    constfs::path stem(full.stem());
+    constfs::path ext(full.extension());
     if (!std::filesystem::exists(full)) {
       return true;  // No meaning to back up if original doesn't exist.
     }
@@ -139,24 +147,24 @@ bool BackupFiles(const std::string &filename, bool remove_file) {
       std::ostringstream temp1;
       temp1 << stem.string() << "_" << ii << ext.string();
 
-      std::filesystem::path file1(parent);
+     fs::path file1(parent);
       file1.append(temp1.str());
       if (std::filesystem::exists(file1) && ii == 9) {
-        std::filesystem::remove(file1);
+       fs::remove(file1);
       }
       if (ii == 0) {
         if (remove_file) {
-          std::filesystem::rename(full, file1);
+         fs::rename(full, file1);
         } else {
-          std::filesystem::copy(full, file1);
+         fs::copy(full, file1);
         }
       } else {
         std::ostringstream temp2;
         temp2 << stem.string() << "_" << ii - 1 << ext.string();
-        std::filesystem::path file2(parent);
+       fs::path file2(parent);
         file2.append(temp2.str());
         if (std::filesystem::exists(file2)) {
-          std::filesystem::rename(file2, file1);
+         fs::rename(file2, file1);
         }
       }
     }

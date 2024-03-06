@@ -6,7 +6,15 @@
 
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <fstream>
 #include <string>
 
@@ -66,7 +74,7 @@ CsvWriter::~CsvWriter() {
 std::string CsvWriter::FileName() const {
   std::string name;
   try {
-    std::filesystem::path temp(filename_);
+   fs::path temp(filename_);
     name = temp.filename().string();
   } catch (const std::exception &err) {
     LOG_ERROR()

@@ -3,7 +3,15 @@
  * SPDX-License-Identifier: MIT
  */
 #include <string>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 
 #include <wx/config.h>
 #include <wx/aboutdlg.h>
@@ -166,7 +174,7 @@ void MainFrame::OnDropFiles(wxDropFilesEvent& event) {
   for (int ii = 0; ii < count; ++ii) {
     try {
       const auto& file = list[ii];
-      std::filesystem::path p(file.ToStdWstring());
+     fs::path p(file.ToStdWstring());
       if (!std::filesystem::exists(p)) {
         continue;
       }

@@ -5,7 +5,15 @@
 #include "childframe.h"
 
 #include <sstream>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <wx/sizer.h>
 #include <wx/bitmap.h>
 #include "util/timestamp.h"
@@ -1321,7 +1329,7 @@ void ChildFrame::RedrawAttachmentView() {
     std::u8string name;
     std::u8string path;
     try {
-      std::filesystem::path fullname = std::filesystem::u8path(attachment->FileName());
+     fs::path fullname =fs::u8path(attachment->FileName());
       name = fullname.filename().u8string();
       path = fullname.parent_path().u8string();
     } catch (const std::exception& ) {

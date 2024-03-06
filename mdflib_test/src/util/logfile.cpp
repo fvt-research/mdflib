@@ -6,7 +6,15 @@
 
 #include <chrono>
 #include <exception>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <iostream>
 
 #include "logconfig.h"
@@ -21,7 +29,7 @@ namespace {
 
 std::string GetStem(const std::string &file) {
   try {
-    std::filesystem::path p(file);
+   fs::path p(file);
     return p.stem().string();
   } catch (const std::exception &) {
   }

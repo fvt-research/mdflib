@@ -5,7 +5,15 @@
 #include "at4block.h"
 
 #include <cerrno>
-#include <filesystem>
+#if __has_include(<filesystem>)
+  #include <filesystem>
+  namespace fs = std::filesystem;
+#elif __has_include(<experimental/filesystem>)
+  #include <experimental/filesystem> 
+  namespace fs = std::experimental::filesystem;
+#else
+  error "Missing the <filesystem> header."
+#endif
 #include <sstream>
 
 #include "mdf/cryptoutil.h"
@@ -114,7 +122,7 @@ void At4Block::GetBlockProperty(BlockPropertyList& dest) const {
   std::string name;
   if (Link(kIndexFilename) > 0) {
     try {
-      std::filesystem::path p = std::filesystem::u8path(filename_);
+     fs::path p =fs::u8path(filename_);
       const auto& u8str = p.filename().u8string();
       name = std::string(u8str.begin(), u8str.end());
     } catch (const std::exception&) {
@@ -244,11 +252,11 @@ void At4Block::ReadData(std::FILE* file, const std::string& dest_file) const {
     }
   } else {
     // Need to copy the source file
-    std::filesystem::path s = std::filesystem::u8path(filename_);
-    std::filesystem::path d = std::filesystem::u8path(dest_file);
+   fs::path s =fs::u8path(filename_);
+   fs::path d =fs::u8path(dest_file);
     if (s != d) {
-      std::filesystem::copy_file(
-          s, d, std::filesystem::copy_options::overwrite_existing);
+     fs::copy_file(
+          s, d,fs::copy_options::overwrite_existing);
     }
   }
   if (flags_ & At4Flags::kUsingMd5) {
